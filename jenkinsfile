@@ -1,0 +1,33 @@
+pipeline {
+    agent {
+        node{
+            label 'master'
+        }
+    }
+    stages{
+        stage('GetRepositoryChanges') {
+            steps{
+                sh 'echo "Get repository changes"'
+                checkout([
+    				$class: 'GitSCM',
+    				branches: [[name: "master"]],
+    				doGenerateSubmoduleConfigurations: false,
+    				submoduleCfg: [],
+    				userRemoteConfigs: [[credentialsId: 'dreds', url: 'git@github.com:tatischev/test-jenkins-code.git']]
+    			])
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'echo "TODO: BUILD"'
+                sh 'make'
+            }
+        }
+        stage('Test') {
+            steps{
+                sh './test.sh'
+                sh 'echo "DONE"'
+            }
+        }
+    }
+}
